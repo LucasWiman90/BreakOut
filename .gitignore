@@ -1,0 +1,7 @@
+# Ignore build directories
+/build/
+/.vscode/
+
+# Ignore other temp files
+*.log
+*.tmp
