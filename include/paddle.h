@@ -3,6 +3,7 @@
 
 #include "constants.h"
 #include "entity.h"
+#include "powerup.h"
 
 //Class to represent the player paddle
 class paddle: public moving_entity {
@@ -19,6 +20,8 @@ public:
     void move_left() noexcept override;
     void move_right() noexcept override;
     void move_down() noexcept override;
+
+    void apply_powerup(powerup& p);
 
     void update() override;
     void draw(sf::RenderWindow& window) override;

@@ -15,7 +15,7 @@ void handle_collision(ball& b, const paddle& p);
 //Resolve potential collision between the ball and a brick
 void handle_collision(ball& b, brick& p);
 
-//Resolve potential collision between a fireball powerup and a paddle
-void handle_collision(powerup& u, const paddle& p);
+//Resolve potential powerups affecting the paddle or ball
+void handle_powerups(powerup& u, paddle& p, ball& b);
 
 #endif

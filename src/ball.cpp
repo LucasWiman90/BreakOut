@@ -1,4 +1,5 @@
 #include "ball.h"
+#include "powerup.h"
 
 //Initialize static data
 sf::Texture ball::texture;
@@ -14,6 +15,9 @@ ball::ball(float x, float y): moving_entity() {
     //By default, operations are relative to the sprite's top lh corner
     //Make them relative to the sprites centre
     sprite.setOrigin(get_centre());
+
+    //Set firemode to false
+    firemode = false;
 }
 
 void ball::move_up() noexcept {
@@ -56,4 +60,21 @@ void ball::update() {
 //Ask the window to draw the sprite for us
 void ball::draw(sf::RenderWindow& window) {
     window.draw(sprite);
+}
+
+//Check if firemode is enabled
+bool ball::isFireMode() const {
+    return firemode;
+}
+
+//Check if firemode is enabled
+void ball::set_firemode(bool mode) {
+    firemode = mode;
+}
+
+//Apply ball specific powerup
+void ball::apply_powerup(powerup& p) {
+    if (p.get_name() == "fireball") {
+        firemode = true;
+    }
 }

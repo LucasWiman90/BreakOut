@@ -128,7 +128,7 @@ class game {
     void handle_input(bool &pause_key_active);
     void handle_non_running_state();
     void handle_running_state();
-    void handle_collisions();
+    void handle_entity_collisions();
 
 public:
     game();

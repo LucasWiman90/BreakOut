@@ -8,15 +8,18 @@
 //Inherits from entity
 //A powerup 
 
+
 class powerup: public moving_entity {
-
-    static sf::Texture texture;
-
-    std::string type;
 
 public:
 
-    powerup(float x, float y, const std::string& type);
+    // Enum to represent the type of powerup
+    enum class Type {
+        Paddle,
+        Ball
+    };
+
+    powerup(float x, float y, Type type, std::string name);
 
     // Implement the helper functions
     void move_up() noexcept override;
@@ -27,7 +30,13 @@ public:
     void update() override;
     void draw(sf::RenderWindow& window) override;
 
-    std::string get_type() const;
+    Type get_type() const;
+    std::string get_name() const;
+
+private:
+    static sf::Texture texture;
+    Type type;
+    std::string name;
 };
 
 #endif

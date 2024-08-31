@@ -3,8 +3,8 @@
 //Initialize static data
 sf::Texture powerup::texture;
 
-powerup::powerup(float x, float y, const std::string& type)
-    : moving_entity(), type(type) {
+powerup::powerup(float x, float y, Type type, std::string name)
+    : moving_entity(), type(type), name(name) {
     //Load the texture
     texture.loadFromFile("sprites/fireball.png");
     sprite.setTexture(texture);
@@ -44,4 +44,13 @@ void powerup::update() {
 //Ask the window to draw the sprite for us
 void powerup::draw(sf::RenderWindow& window) {
     window.draw(sprite);
+}
+
+//Returns the powerup type
+powerup::Type powerup::get_type() const {
+    return type;
+}
+
+std::string powerup::get_name() const {
+    return name;
 }

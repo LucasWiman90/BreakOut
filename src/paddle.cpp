@@ -62,3 +62,8 @@ void paddle::process_player_input() {
         velocity.x = 0;
     }
 }
+
+//Apply paddle specific powerup
+void paddle::apply_powerup(powerup& p) {
+
+}

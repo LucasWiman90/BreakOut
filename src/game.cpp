@@ -73,7 +73,7 @@ void game::reset() {
     manager.create<ball>(constants::window_width/2.0f, constants::window_height/2.0f);
 
     // Test create a powerup
-    manager.create<powerup>(constants::window_width/4.0f, constants::window_height/4.0f, "fireball");
+    manager.create<powerup>(constants::window_width/4.0f, constants::window_height/4.0f, powerup::Type::Ball, "fireball");
 
 	manager.create<paddle>(constants::window_width/2.0f, constants::window_height - constants::paddle_height);
 
@@ -205,12 +205,12 @@ void game::handle_running_state()
 
     //Calculate the updated graphics
     manager.update();
-    handle_collisions();
+    handle_entity_collisions();
     manager.refresh();
     manager.draw(game_window);
 }
 
-void game::handle_collisions() {
+void game::handle_entity_collisions() {
     //For every ball, call a function which
     //  For every brick, call a function which
     //    Calls handle collission with the ball and the brick as arguments
@@ -230,9 +230,14 @@ void game::handle_collisions() {
     //For every powerup, call a function which
     //  For every paddle, call a function which
     //    Calls handle collission with the paddle and powerup as arguments
-    manager.apply_all<powerup>([this](auto &powerup) {
-        manager.apply_all<paddle>([&powerup](auto &the_paddle) {
-            handle_collision(powerup, the_paddle);
+    manager.apply_all<powerup>([this](auto& powerup) {
+        // Apply a function to all paddle entities
+        manager.apply_all<paddle>([&powerup, this](auto& the_paddle) {
+            // Retrieve all ball entities
+            manager.apply_all<ball>([&powerup, &the_paddle](auto& the_ball) {
+                // Call handle_powerups with powerup, paddle, and ball
+                handle_powerups(powerup, the_paddle, the_ball);
+            });
         });
     });
 }
