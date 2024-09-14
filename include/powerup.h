@@ -8,13 +8,13 @@
 //Inherits from entity
 //A powerup 
 
-
 class powerup: public moving_entity {
 
 public:
 
     // Enum to represent the type of powerup
     enum class Type {
+        None,       //No active powerup
         Paddle,
         Ball
     };

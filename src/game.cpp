@@ -47,6 +47,12 @@ game::game() {
 
     //Load a font from file
     verdana.loadFromFile("/usr/share/fonts/truetype/msttcorefonts/verdana.ttf");
+
+    debug_text.setFont(verdana);
+    debug_text.setPosition(constants::window_width/2.0f-100.0f, constants::window_height/2.0f-100.0f);
+    debug_text.setCharacterSize(15);
+    debug_text.setFillColor(sf::Color::Red);
+    debug_text.setString(powerup_active ? "Powerup Active: True" : "Powerup Active: False");
     
     text_state.setFont(verdana);
     text_state.setPosition(constants::window_width/2.0f-100.0f, constants::window_height/2.0f-100.0f);
@@ -199,6 +205,19 @@ void game::handle_running_state()
         state = game_state::player_wins;
     }
 
+    if (powerup_active && powerup_clock.getElapsedTime().asSeconds() > powerup_duration) {
+        // Use the entity manager to access the paddle and ball, similar to handle_entity_collisions
+        manager.apply_all<paddle>([this](auto& the_paddle) {
+            manager.apply_all<ball>([this, &the_paddle](auto& the_ball) {
+                // Deactivate the power-up when the timer expires
+                deactivate_powerup(the_paddle, the_ball);
+            });
+        });
+    }
+
+    //Remove this when needed
+    debug_text.setString(powerup_active ? "Powerup Active: True" : "Powerup Active: False");
+
     if (lives <= 0) {
         state = game_state::game_over;
     }
@@ -208,6 +227,39 @@ void game::handle_running_state()
     handle_entity_collisions();
     manager.refresh();
     manager.draw(game_window);
+    //Remove this debug draw when not needed
+    game_window.draw(debug_text);
+}
+
+void game::activate_powerup(powerup& p, paddle& paddle, ball& ball) {
+    // Activate power-up if none is active
+    if (!powerup_active) {
+        powerup_active = true;
+        active_powerup_type = p.get_type();
+        powerup_clock.restart();  // Start the power-up timer
+
+        // Apply the power-up based on its type
+        if (p.get_type() == powerup::Type::Ball) {
+            ball.apply_powerup(p);
+        } else if (p.get_type() == powerup::Type::Paddle) {
+            paddle.apply_powerup(p);
+        }
+    }
+}
+
+void game::deactivate_powerup(paddle& paddle, ball& ball) {
+    if (powerup_active) {
+        // Revert the power-up effect
+        if (active_powerup_type == powerup::Type::Ball) {
+            ball.revert_powerup();
+        } else if (active_powerup_type == powerup::Type::Paddle) {
+            paddle.revert_powerup();
+        }
+
+        // Clear the active power-up state
+        active_powerup_type = powerup::Type::None;
+        powerup_active = false;
+    }
 }
 
 void game::handle_entity_collisions() {
@@ -234,9 +286,16 @@ void game::handle_entity_collisions() {
         // Apply a function to all paddle entities
         manager.apply_all<paddle>([&powerup, this](auto& the_paddle) {
             // Retrieve all ball entities
-            manager.apply_all<ball>([&powerup, &the_paddle](auto& the_ball) {
+            manager.apply_all<ball>([&powerup, &the_paddle, this](auto& the_ball) {
                 // Call handle_powerups with powerup, paddle, and ball
-                handle_powerups(powerup, the_paddle, the_ball);
+                // If the powerup and paddle are interacting, activate the powerup
+                if (is_interacting(powerup, the_paddle)) {
+                    // Activate the powerup using the paddle and ball references
+                    activate_powerup(powerup, the_paddle, the_ball);
+
+                    // Destroy the powerup after activation
+                    powerup.destroy();
+                }
             });
         });
     });

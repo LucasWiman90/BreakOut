@@ -65,5 +65,9 @@ void paddle::process_player_input() {
 
 //Apply paddle specific powerup
 void paddle::apply_powerup(powerup& p) {
+    //TODO, we have none of these yet
+}
 
+void paddle::revert_powerup() {
+    //TODOm we have none of these yet
 }

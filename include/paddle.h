@@ -22,6 +22,7 @@ public:
     void move_down() noexcept override;
 
     void apply_powerup(powerup& p);
+    void revert_powerup();
 
     void update() override;
     void draw(sf::RenderWindow& window) override;

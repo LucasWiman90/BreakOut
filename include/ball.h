@@ -21,6 +21,7 @@ public:
     void move_down() noexcept override;
 
     void apply_powerup(powerup& p);
+    void revert_powerup();
 
     bool isFireMode() const;
     void set_firemode(bool mode);

@@ -67,14 +67,21 @@ bool ball::isFireMode() const {
     return firemode;
 }
 
-//Check if firemode is enabled
+//Set firemode
 void ball::set_firemode(bool mode) {
     firemode = mode;
 }
 
 //Apply ball specific powerup
+//Currently fireball mode specific
 void ball::apply_powerup(powerup& p) {
     if (p.get_name() == "fireball") {
         firemode = true;
     }
+}
+
+//Revert ball specific powerup
+//Currently only fireball
+void ball::revert_powerup() {
+    firemode = false;
 }

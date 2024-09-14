@@ -34,7 +34,7 @@ void handle_collision(ball& the_ball, brick& block) {
             block.destroy();
         }
 
-        //If the ball is a fireball, then it blasts through the bricks
+        //If the ball is a fireball, then it blasts through the bricks and ignores collision
         if(!the_ball.isFireMode()) {
             //Make the new direction depend on where the collision occurs on the brick
             //If the side of the brick, make the ball bounce to the left or right
@@ -75,13 +75,14 @@ void handle_collision(ball& the_ball, brick& block) {
 
 //Resolve potential collision between the paddle and a powerup
 //We need to pass a reference to the ball aswell, in case it is a ball powerup
+//TODO: This function is no longer used anywhere as its logic happens inside game.cpp instead
 void handle_powerups(powerup& u, paddle& p, ball& b) {
     if (is_interacting(u, p)) {
 
         if(u.get_type() == powerup::Type::Ball) {
             b.apply_powerup(u);
         } else {
-            //p.apply_powerup(u)
+            p.apply_powerup(u);
         }
         //Then we should just consume the powerup
         u.destroy();

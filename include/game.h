@@ -117,18 +117,30 @@ class game {
 
     //Use SFML text and font classes to communicate with the player
     sf::Font verdana;
-    sf::Text text_state, text_lives;
+    sf::Text text_state, text_lives, debug_text;
 
     //Member to store the current state of the game
     game_state state{game_state::running};
 
     int lives{constants::player_lives};
 
+    // Power-up handling
+    sf::Clock powerup_clock;         // Clock to track power-up time
+    float powerup_duration{5.0f};    // Example: 5 seconds per power-up
+    bool powerup_active{false};      // Is a power-up active?
+    powerup::Type active_powerup_type{powerup::Type::None};
+
     void handle_events();
     void handle_input(bool &pause_key_active);
     void handle_non_running_state();
     void handle_running_state();
     void handle_entity_collisions();
+
+    // Function to activate the power-up and start the timer
+    void activate_powerup(powerup& p, paddle& paddle, ball& ball);
+
+    // Function to deactivate the current power-up when the timer expires
+    void deactivate_powerup(paddle& paddle, ball& ball);
 
 public:
     game();
